@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Price Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            box-sizing: border-box;
+            background: rgb(63, 246, 82);
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #qr-reader {
+            min-width: 50vw;
+            background: rgb(28, 28, 28);
+        }
+
+        #qr-reader a {
+            color: white;
+        }
+
+        .output {
+            font-size: larger;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="qr-reader"></div>
+    <div class="output">
+
+    </div>
+    <script>
+        const ouputDiv = document.querySelector(".output");
+
+        const html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 250, formatsToSupport: ["EAN_13"] });
+
+        html5QrcodeScanner.render(onScanSuccess);
+
+        async function onScanSuccess(decodedText, decodedResult) {
+            let output = "";
+            const link = `https://www.bokborsen.se/?g=0&c=0&q=${decodedText}&qa=&qt=&qi=&qs=&f=1&fi=&fd=&fs=&pb=&_s=price&_d=asc`;
+            output += decodedText
+
+            const response = await fetch(link);
+            const body = await response.text();
+            const priceElms = body.match(/class="price".*</g);
+
+            if (priceElms == null || priceElms.length == 0) {
+                output += `<br/>No listings found on Bokbörsen, see <a href=${link} target="_blank">link</a>`
+            }
+
+            const prices = priceElms.map(x => x.match(/\d+/)[0]).sort((a, b) => a-b);
+            console.log(prices);
+
+            prices.forEach(price => {
+                output += `<br/>${price}kr`;
+            });
+            
+
+            ouputDiv.innerHTML = output;
+        }
+
+    </script>
+</body>
+
+</html>
