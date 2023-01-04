@@ -46,7 +46,7 @@
         const ouputDiv = document.querySelector(".output");
 
         const html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 10, qrbox: 250, formatsToSupport: ["EAN_13"] });
+            "qr-reader", { fps: 100, qrbox: 150, formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13] });
 
         html5QrcodeScanner.render(onScanSuccess);
 
@@ -63,13 +63,13 @@
                 output += `<br/>No listings found on Bokbörsen, see <a href=${link} target="_blank">link</a>`
             }
 
-            const prices = priceElms.map(x => x.match(/\d+/)[0]).sort((a, b) => a-b);
+            const prices = priceElms.map(x => x.match(/\d+/)[0]).sort((a, b) => a - b);
             console.log(prices);
 
             prices.forEach(price => {
                 output += `<br/>${price}kr`;
             });
-            
+
 
             ouputDiv.innerHTML = output;
         }
