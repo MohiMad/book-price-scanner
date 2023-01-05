@@ -46,14 +46,20 @@
         const ouputDiv = document.querySelector(".output");
 
         const html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 100, qrbox: 150, formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13] });
+            "qr-reader", {
+            fps: 10,
+            qrbox: 150,
+            formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13],
+            rememberLastUsedCamera: true,
+            showTorchButtonIfSupported: true
+        });
 
         html5QrcodeScanner.render(onScanSuccess);
 
         async function onScanSuccess(decodedText, decodedResult) {
             let output = "";
             const link = `https://www.bokborsen.se/?g=0&c=0&q=${decodedText}&qa=&qt=&qi=&qs=&f=1&fi=&fd=&fs=&pb=&_s=price&_d=asc`;
-            output += decodedText
+            output += `<a href=${link} target="_blank">${decodedText}</a>`;
 
             const response = await fetch(link);
             const body = await response.text();
@@ -64,7 +70,7 @@
             }
 
             const prices = priceElms.map(x => x.match(/\d+/)[0]).sort((a, b) => a - b);
-            console.log(prices);
+            console.log(bookName, prices);
 
             prices.forEach(price => {
                 output += `<br/>${price}kr`;
