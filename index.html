@@ -65,7 +65,10 @@
                 const priceElms = body.match(/class="price".*</g);
 
                 if (priceElms == null || priceElms.length == 0) {
-                    output += `<br/>No listings found on Bokbörsen, see <a href=${link} target="_blank">link</a>`
+                    output += `<br/>No listings found on Bokbörsen, see <a href=${link} target="_blank">link</a>`;
+                    ouputDiv.innerHTML = output;
+
+                    return;
                 }
 
                 const prices = priceElms.map(x => x.match(/\d+/)[0]).sort((a, b) => a - b);
