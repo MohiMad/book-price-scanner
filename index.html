@@ -49,9 +49,7 @@
             "qr-reader", {
             fps: 100,
             qrbox: 150,
-            formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13],
-            rememberLastUsedCamera: true,
-            showTorchButtonIfSupported: true
+            formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
         });
 
         html5QrcodeScanner.render(onScanSuccess);
@@ -70,12 +68,10 @@
             }
 
             const prices = priceElms.map(x => x.match(/\d+/)[0]).sort((a, b) => a - b);
-            console.log(bookName, prices);
 
             prices.forEach(price => {
                 output += `<br/>${price}kr`;
             });
-
 
             ouputDiv.innerHTML = output;
         }
